@@ -1,10 +1,18 @@
-﻿namespace PaymentTransactionProcessService
+﻿using PaymentTransactionProcessService.PresentationLayer;
+
+namespace PaymentTransactionProcessService
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
-            
+            while (true)
+            {
+                var command = Console.ReadLine();
+
+                var interpreter = CommandInterpreter.GetInterpreter();
+                interpreter.Interpret(command);
+            }
         }
     }
 }
