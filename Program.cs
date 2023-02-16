@@ -10,7 +10,7 @@ namespace PaymentTransactionProcessService
             {
                 var command = Console.ReadLine();
 
-                var interpreter = CommandInterpreter.GetInterpreter();
+                var interpreter = new CommandInterpreter();
                 interpreter.Interpret(command);
             }
         }

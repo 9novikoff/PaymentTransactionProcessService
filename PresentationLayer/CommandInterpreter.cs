@@ -9,14 +9,6 @@ namespace PaymentTransactionProcessService.PresentationLayer
 {
     public class CommandInterpreter
     {
-        private static CommandInterpreter _interpreter;
-        private CommandInterpreter(){}
-
-        public static CommandInterpreter GetInstance()
-        {
-            _interpreter ??= new CommandInterpreter();
-            return _interpreter;
-        }
         public void Interpret(string command)
         {
             switch (command.ToLower())
