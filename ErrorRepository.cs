@@ -8,7 +8,7 @@ namespace PaymentTransactionProcessService
 {
     public class ErrorRepository
     {
-        private ErrorRepository _instance;
+        private static ErrorRepository _instance;
         private int _errorsCounter = 0;
         private int _parsedLines = 0;
         private int _parsedFiles = 0;
@@ -16,7 +16,7 @@ namespace PaymentTransactionProcessService
 
         private ErrorRepository(){}
 
-        public ErrorRepository GetErrorRepository()
+        public static ErrorRepository GetErrorRepository()
         {
             _instance ??= new ErrorRepository();
             return _instance;
@@ -44,6 +44,14 @@ namespace PaymentTransactionProcessService
         public int GetParsedNumber()
         {
             return _parsedFiles;
+        }
+
+        public void Clear()
+        {
+            _errorsCounter = 0;
+            _parsedLines = 0;
+            _parsedFiles = 0;
+            _invalidPathes.Clear();
         }
     }
 }

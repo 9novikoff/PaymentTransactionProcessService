@@ -6,12 +6,12 @@ namespace PaymentTransactionProcessService
     {
         private static void Main()
         {
+            Console.WriteLine("Available commands: start, reset, stop");
             while (true)
             {
                 var command = Console.ReadLine();
 
-                var interpreter = new CommandInterpreter();
-                interpreter.Interpret(command);
+                CommandInterpreter.Interpret(command);
             }
         }
     }

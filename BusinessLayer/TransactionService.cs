@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using PaymentTransactionProcessService.Models;
 
 namespace PaymentTransactionProcessService.BusinessLayer
@@ -13,7 +15,7 @@ namespace PaymentTransactionProcessService.BusinessLayer
     {
         private readonly IFormatReader _reader;
 
-        TransactionService(IFormatReader reader)
+        public TransactionService(IFormatReader reader)
         {
             _reader = reader;
         }
@@ -25,8 +27,14 @@ namespace PaymentTransactionProcessService.BusinessLayer
             var transformedTransactions = TransformTransactions(transactions);
 
             errorRepository.AddParsedFile();
-            var resPath = ConfigurationManager.AppSettings["TransactionsResult"] + @"\" + DateTime.Now.Date + @"\" 
-                          + "output" + errorRepository.GetParsedNumber() + ".json";
+
+            var directory = ConfigurationManager.AppSettings["TransactionsResult"] + @"\" +
+                            DateTime.Now.ToString("MM-dd-yyyy");
+            Directory.CreateDirectory(directory);
+
+            var resPath = directory + @"\output" + errorRepository.GetParsedNumber() + ".json";
+
+            SaveTransactionsAsync(resPath, transformedTransactions);
         }
 
         private List<CityServices> TransformTransactions(IEnumerable<Transaction> transactions)
@@ -34,20 +42,20 @@ namespace PaymentTransactionProcessService.BusinessLayer
             var citiesServices =
             (
                 from t1 in transactions
-                let cityName = t1.Address.Split(",")[0]
+                let cityName = t1.Address.Split(";")[0]
                 select new CityServices()
                 {
                     City = cityName,
                     Services = (
                         from t2 in transactions
-                        where cityName == t2.Address.Split(",")[0]
+                        where cityName == t2.Address.Split(";")[0]
                         let serviceName = t2.Service
                         select new Service()
                         {
                             Name = serviceName,
                             Payers = (
                                 from t3 in transactions
-                                where serviceName == t2.Service
+                                where serviceName == t3.Service && cityName == t3.Address.Split(";")[0]
                                 select new Payer()
                                 {
                                     Name = t3.FirstName + " " + t3.LastName,
@@ -58,7 +66,7 @@ namespace PaymentTransactionProcessService.BusinessLayer
                             ).ToList()
                         }
                     ).ToList()
-                }).ToList();
+                }).GroupBy(c => c.City).Select(s => s.First()).ToList();
 
             foreach (var cityServices in citiesServices)
             {
@@ -95,12 +103,14 @@ namespace PaymentTransactionProcessService.BusinessLayer
                 return null;
             }
 
+            parameters = parameters.Select(p => p.Trim()).ToList();
+
             int propertyIndex = 0;
-            var firstName = parameters[propertyIndex];
+            var firstName = parameters[propertyIndex++];
             var lastName = parameters[propertyIndex++];
             var address = parameters[propertyIndex++];
             var canBeParsedToDecimal = decimal.TryParse(parameters[propertyIndex++],out var payment);
-            var canBeParsedToDate = DateTime.TryParse(parameters[propertyIndex++], out var date);
+            var canBeParsedToDate = DateTime.TryParseExact(parameters[propertyIndex++], "yyyy-dd-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
             var canBeParsedToLong = long.TryParse(parameters[propertyIndex++], out var accountNumber);
             var service = parameters[propertyIndex++];
 
@@ -116,9 +126,10 @@ namespace PaymentTransactionProcessService.BusinessLayer
 
         private async Task SaveTransactionsAsync(string path, List<CityServices> citiesServices)
         {
-            var jsonString = JsonSerializer.Serialize(citiesServices);
+            var jsonString = JsonConvert.SerializeObject(citiesServices);
 
             await File.WriteAllTextAsync(path, jsonString);
         }
+
     }
 }
