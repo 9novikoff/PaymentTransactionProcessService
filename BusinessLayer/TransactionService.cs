@@ -110,7 +110,7 @@ namespace PaymentTransactionProcessService.BusinessLayer
             var lastName = parameters[propertyIndex++];
             var address = parameters[propertyIndex++];
             var canBeParsedToDecimal = decimal.TryParse(parameters[propertyIndex++],out var payment);
-            var canBeParsedToDate = DateTime.TryParseExact(parameters[propertyIndex++], "yyyy-dd-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
+            var canBeParsedToDate = DateOnly.TryParseExact(parameters[propertyIndex++], "yyyy-dd-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
             var canBeParsedToLong = long.TryParse(parameters[propertyIndex++], out var accountNumber);
             var service = parameters[propertyIndex++];
 

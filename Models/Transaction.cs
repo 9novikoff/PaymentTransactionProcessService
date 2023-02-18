@@ -8,7 +8,7 @@ namespace PaymentTransactionProcessService.Models
 {
     public class Transaction
     {
-        public Transaction(string firstName, string lastName, string address, decimal payment, DateTime date, long accountNumber, string service)
+        public Transaction(string firstName, string lastName, string address, decimal payment, DateOnly date, long accountNumber, string service)
         {
             FirstName = firstName;
             LastName = lastName;
@@ -23,7 +23,7 @@ namespace PaymentTransactionProcessService.Models
         public string LastName { get; set; }
         public string Address { get; set; }
         public decimal Payment { get; set; }
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
         public long AccountNumber { get; set; }
         public string Service { get; set; }
     }

@@ -14,7 +14,7 @@ namespace PaymentTransactionProcessService.Models
         [JsonProperty("payment")]
         public decimal Payment { get; set; }
         [JsonProperty("date")]
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
         [JsonProperty("account_number")]
         public long AccountNumber { get; set; }
     }
