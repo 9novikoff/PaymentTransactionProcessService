@@ -12,7 +12,7 @@ namespace PaymentTransactionProcessService
         private int _errorsCounter = 0;
         private int _parsedLines = 0;
         private int _parsedFiles = 0;
-        private List<string> _invalidPathes = new List<string>();
+        private List<string> _invalidFiles = new List<string>();
 
         private ErrorRepository(){}
 
@@ -21,9 +21,9 @@ namespace PaymentTransactionProcessService
             _instance ??= new ErrorRepository();
             return _instance;
         }
-        public void AddInvalidPath(string path)
+        public void AddInvalidFile(string path)
         {
-            _invalidPathes.Add(path);
+            _invalidFiles.Add(path);
         }
 
         public void AddError()
@@ -41,9 +41,24 @@ namespace PaymentTransactionProcessService
             _parsedFiles++;
         }
 
-        public int GetParsedNumber()
+        public int GetParsedFiles()
         {
             return _parsedFiles;
+        }
+
+        public int GetFoundErrors()
+        {
+            return _errorsCounter;
+        }
+
+        public List<string> GetInvalidFiles()
+        {
+            return _invalidFiles;
+        }
+
+        public int GetParsedLines()
+        {
+            return _parsedLines;
         }
 
         public void Clear()
@@ -51,7 +66,7 @@ namespace PaymentTransactionProcessService
             _errorsCounter = 0;
             _parsedLines = 0;
             _parsedFiles = 0;
-            _invalidPathes.Clear();
+            _invalidFiles.Clear();
         }
     }
 }

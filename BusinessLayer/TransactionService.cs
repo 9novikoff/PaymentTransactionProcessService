@@ -32,29 +32,30 @@ namespace PaymentTransactionProcessService.BusinessLayer
                             DateTime.Now.ToString("MM-dd-yyyy");
             Directory.CreateDirectory(directory);
 
-            var resPath = directory + @"\output" + errorRepository.GetParsedNumber() + ".json";
+            var resPath = directory + @"\output" + errorRepository.GetParsedFiles() + ".json";
 
             SaveTransactionsAsync(resPath, transformedTransactions);
         }
 
         private List<CityServices> TransformTransactions(IEnumerable<Transaction> transactions)
         {
+            var transactionsList = transactions.ToList();
             var citiesServices =
             (
-                from t1 in transactions
+                from t1 in transactionsList
                 let cityName = t1.Address.Split(";")[0]
                 select new CityServices()
                 {
                     City = cityName,
                     Services = (
-                        from t2 in transactions
+                        from t2 in transactionsList
                         where cityName == t2.Address.Split(";")[0]
                         let serviceName = t2.Service
                         select new Service()
                         {
                             Name = serviceName,
                             Payers = (
-                                from t3 in transactions
+                                from t3 in transactionsList
                                 where serviceName == t3.Service && cityName == t3.Address.Split(";")[0]
                                 select new Payer()
                                 {
@@ -91,8 +92,8 @@ namespace PaymentTransactionProcessService.BusinessLayer
                     errorRepository.AddParsedLine();
                     yield return transaction;
                 }
-
-                errorRepository.AddError();
+                else
+                    errorRepository.AddError();
             }
         }
 
