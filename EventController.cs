@@ -56,7 +56,7 @@ namespace PaymentTransactionProcessService
         private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             var directory = ConfigurationManager.AppSettings["TransactionsResult"] + @"\" +
-                            DateTime.Now.ToString("MM-dd-yyyy");
+                            e.SignalTime.ToString("MM-dd-yyyy");
             Directory.CreateDirectory(directory);
             var resPath = directory + @"\meta" + ".log";
 
