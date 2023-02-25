@@ -12,7 +12,7 @@ namespace PaymentTransactionProcessService
         private int _errorsCounter = 0;
         private int _parsedLines = 0;
         private int _parsedFiles = 0;
-        private List<string> _invalidFiles = new List<string>();
+        private readonly List<string> _invalidFiles = new List<string>();
 
         private ErrorRepository(){}
 

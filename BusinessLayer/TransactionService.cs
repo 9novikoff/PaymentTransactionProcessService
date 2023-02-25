@@ -43,20 +43,20 @@ namespace PaymentTransactionProcessService.BusinessLayer
             var citiesServices =
             (
                 from t1 in transactionsList
-                let cityName = t1.Address.Split(";")[0]
+                let cityName = t1.Address.Split(",")[0]
                 select new CityServices()
                 {
                     City = cityName,
                     Services = (
                         from t2 in transactionsList
-                        where cityName == t2.Address.Split(";")[0]
+                        where cityName == t2.Address.Split(",")[0]
                         let serviceName = t2.Service
                         select new Service()
                         {
                             Name = serviceName,
                             Payers = (
                                 from t3 in transactionsList
-                                where serviceName == t3.Service && cityName == t3.Address.Split(";")[0]
+                                where serviceName == t3.Service && cityName == t3.Address.Split(",")[0]
                                 select new Payer()
                                 {
                                     Name = t3.FirstName + " " + t3.LastName,
@@ -83,7 +83,6 @@ namespace PaymentTransactionProcessService.BusinessLayer
 
         private IEnumerable<Transaction> GetTransactions(IEnumerable<List<string>> parameters, ErrorRepository errorRepository)
         {
-            //TO LINQ!
             foreach (var item in parameters)
             {
                 var transaction = GetValidatedTransaction(item);
@@ -110,6 +109,7 @@ namespace PaymentTransactionProcessService.BusinessLayer
             var firstName = parameters[propertyIndex++];
             var lastName = parameters[propertyIndex++];
             var address = parameters[propertyIndex++];
+            address = address.Replace("\"", "");
             var canBeParsedToDecimal = decimal.TryParse(parameters[propertyIndex++],out var payment);
             var canBeParsedToDate = DateOnly.TryParseExact(parameters[propertyIndex++], "yyyy-dd-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
             var canBeParsedToLong = long.TryParse(parameters[propertyIndex++], out var accountNumber);

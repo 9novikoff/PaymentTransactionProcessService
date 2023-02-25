@@ -40,7 +40,7 @@ namespace PaymentTransactionProcessService
 
             if (fileExtension.Equals(txtExtension))
                 reader = new TxtReader();
-            else if (txtExtension.Equals(csvExtension))
+            else if (fileExtension.Equals(csvExtension))
                 reader = new CsvReader();
             else
             {

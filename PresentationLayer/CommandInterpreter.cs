@@ -43,8 +43,7 @@ namespace PaymentTransactionProcessService.PresentationLayer
                 _eventController = new EventController();
 
                 Console.WriteLine("The service has been started");
-                Console.WriteLine("Data within one field must be separated with ';' character." +
-                                  "\r\nFields must be separated with a ',' character" +
+                Console.WriteLine("Fields must be separated with a ',' character" +
                                   "\r\nOtherwise, the data will be considered invalid.");
             }
         }        
